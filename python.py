@@ -1,64 +1,73 @@
-"""
-Ejercicio-Fundamentos de Data Science.
-"""
 
-estudiantes = [
-    {"nombre": "Ana", "notas": [6.5, 5.5, 7.0]},
-    {"nombre": "Luis", "notas": [4.1, 5.1, 6.0]},
-    {"nombre": "Sofia", "notas": [4.0, 2.9, 4.5]},
-]
+estudiantes = {
+    "miguel": [3.5, 4.0, 4.1, 3.9],
+    "lucia": [5.1, 5.0, 5.3, 5.0],   
+    "javier": [3.7, 4.0, 3.9, 3.9],
+    "camila": [4.2, 4.0, 4.3, 4.2],
+    "diego": [3.8, 4.0, 3.9, 3.9],
+    "valeria": [5.1, 5.1, 5.0, 5.2], 
+    "ricardo": [3.5, 3.6, 3.4, 3.4],
+    "andrea": [3.9, 3.8, 3.9, 4.0],
+    "marco": [4.1, 4.2, 4.3, 4.3],
+    "beatriz": [4.5, 4.6, 4.6, 4.6],
+    "fernando": [4.8, 4.7, 4.8, 4.8],
+    "elena": [5.0, 4.9, 5.0, 5.0],
+    "tomás": [3.9, 3.8, 3.8, 3.8],
+    "gabriela": [4.6, 4.7, 4.6, 4.6],
+    "roberto": [3.8, 3.9, 3.7, 3.8],
+    "isabel": [5.1, 5.0, 5.2, 5.1], 
+    "julio": [3.7, 3.8, 3.7, 3.7],
+    "karla": [3.9, 3.8, 3.7, 3.8],
+    "monica": [4.8, 4.9, 4.8, 4.7],
+    "nicolas": [4.0, 4.1, 4.0, 3.9],
+    "olivia": [5.1, 5.0, 5.2, 5.1], 
+    "pablo": [3.7, 3.6, 3.8, 3.7]
+}
 
-# 1. Calcular el promedio de notas de cada estudiante
-promedios = []
-print("\n1:Promedio de los estudiantes y promedios mas altos y bajos\n")
-for estudiante in estudiantes:
-    promedio = sum(estudiante["notas"]) / len(estudiante["notas"])
-    estudiante["promedio"] = promedio
-    promedios.append(promedio)
-    print(f"-El promedio de {estudiante['nombre']} es {promedio:.1f}")
+# 1) Calcular promedios
+promedios = {}
+for estudiante, notas in estudiantes.items():
+    promedio = sum(notas) / len(notas)
+    promedios[estudiante] = round(promedio, 2)
 
-# Encontrar el mayor y menor promedio
-mayor = max(estudiantes, key=lambda x: x["promedio"])
-menor = min(estudiantes, key=lambda x: x["promedio"])
+print("1) Promedios de estudiantes:")
+for e, p in promedios.items():
+    print(f"{e}: {p}")
 
-# Mostrar resultados
-print(f"-Mayor promedio: {mayor['nombre']} con {mayor['promedio']:.1f}")
-print(f"-Menor promedio: {menor['nombre']} con {menor['promedio']:.1f}")
+# 2) Mayor y menor promedio 
+max_promedio = max(promedios.values())
+min_promedio = min(promedios.values())
 
-# 2.Cuantos estudiantes aprobaron todas las asignaturas(nota>=4.0)
-aprobados = 0
-for estudiante in estudiantes:
-    if all(nota >= 4.0 for nota in estudiante["notas"]):
-        aprobados += 1
-print("\n2:Cantidad de estudaintes que aprobaron todas las asignaturas\n")
-print(f"-Cantidad de estudiantes que aprobaron todas las asignaturas: {aprobados}")
+mejores = [e for e, p in promedios.items() if p == max_promedio]
+peores = [e for e, p in promedios.items() if p == min_promedio]
 
-# 3. Encontrar la moda para las notas de los estudiantes
-valores_nota = []
-for estudiante in estudiantes:
-    valores_nota.extend(
-        estudiante["notas"]
-    )  # Agregamos todas las notas en una sola lista
+print("\nMayor promedio:", ", ".join(mejores), f"con {max_promedio}")
+print("Menor promedio:", ", ".join(peores), f"con {min_promedio}")
 
-moda = max(set(valores_nota), key=valores_nota.count)
+# 3) Estudiantes que aprobaron todas las asignaturas
+aprobados = [e for e, notas in estudiantes.items() if all(n >= 4.0 for n in notas)]
+print("\n2) Estudiantes que aprobaron todas las asignaturas:", ", ".join(aprobados))
 
-print("\n3:Moda de las notas\n")
-print(f"-La moda para las notas es: {moda}")
+# 4) Nota más frecuente
+todas_notas = []
+for notas in estudiantes.values():
+    todas_notas.extend(notas)
 
-# 4. Calcular el porcentaje de estudiantes con al menos una baja nota (nota < 4.0)
-umbral_baja_nota = 4.0
-bajas = sum(
-    1
-    for estudiante in estudiantes
-    if any(nota < umbral_baja_nota for nota in estudiante["notas"])
-)
-porcentaje_bajas = (bajas / len(estudiantes)) * 100
-print("\n4:Porcentaje de estudiantes con nota (bajo 4.0)\n")
-print(f"-El {porcentaje_bajas:.1f}% de los estudiantes tienen al menos una baja nota.")
+frecuencias = {}
+for nota in todas_notas:
+    frecuencias[nota] = frecuencias.get(nota, 0) + 1
 
-# 5. Ordenar lista según el mayor promedio
-estudiantes_ordenados = sorted(estudiantes, key=lambda x: x["promedio"], reverse=True)
+max_frec = max(frecuencias.values())
+modas = [str(n) for n, f in frecuencias.items() if f == max_frec]
+print(f"3) Notas más frecuentes: [{', '.join(modas)}] (aparecen {max_frec} veces)")
 
-print("\n5:Lista de estudiantes ordenada por mayor promedio\n")
-for estudiante in estudiantes_ordenados:
-    print(f"Nombre: {estudiante['nombre']}, Promedio: {estudiante['promedio']:.1f}")
+# 5) Porcentaje de estudiantes con al menos una nota < 4
+con_reprobadas = [e for e, notas in estudiantes.items() if any(n < 4.0 for n in notas)]
+porcentaje = (len(con_reprobadas) / len(estudiantes)) * 100
+print(f"4) {porcentaje:.2f}% de estudiantes tiene al menos una nota bajo 4.0")
+
+# 6) Estudiantes ordenados por promedio
+ordenados = sorted(promedios.items(), key=lambda x: x[1], reverse=True)
+print("5) Estudiantes ordenados por promedio:")
+for e, p in ordenados:
+    print(f"{e}: {p}")
